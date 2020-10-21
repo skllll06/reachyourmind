@@ -59,7 +59,7 @@ const greeting_follow = async (ev) => {
   });
 }
 
-const handleMessageEvent = async (ev) =>  {
+const handleMessageEvent = async (ev) => {
   const data = ev.postback.data;
   const splitData = data.split('&');
   //ユーザー名を取得
@@ -70,20 +70,37 @@ const handleMessageEvent = async (ev) =>  {
     return client.replyMessage(ev.replyToken, {
       type: "text",
       text: `${profile.displayName}さん、どうしました？`,
-      values: 'start'
+      values: 'what'
     });
-  } else if (splitData[0] === 'start') {
-    const orderedPlace = splitData[1];
+  } else if (splitData[0] === 'what') {
+    const Whatareudoing = splitData[1]
+    askfeel(ev, Whatareudoing)
+  } else if (splitData[0] === 'feel') {
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
     return client.replyMessage(ev.replyToken, {
       type: "text",
-      text: `${profile.displayName}さん、どうしました？`,
-      values: 'how'
+      text: `どうしてそう感じだのですか？`,
+      values: `why&${Whatareudoing}&${Howdoufeel}`
     });
-  } else if (splitData[0] === 'how') {
+  } else if (splitData[0] === 'why') {
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
+    const whyareufeelso = splitData[3]
     return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `そこから何を学びましたか？`,
+      values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
     });
-  } else if (splitData[0] === 'lmh') {
+  } else if (splitData[0] === 'learn') {
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
+    const whyareufeelso = splitData[3]
+    const whatdoulearn = splitData[4]
     return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `そこから何を学びましたか？`,
+      values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
     });
   } else {
     return client.replyMessage(ev.replyToken, {
@@ -92,7 +109,7 @@ const handleMessageEvent = async (ev) =>  {
     });
   }
 }
-  
+
 const handlePostbackEvent = async (ev) => {
   const profile = await client.getProfile(ev.source.userId);
   const data = ev.postback.data;
@@ -134,48 +151,12 @@ const handlePostbackEvent = async (ev) => {
 }
 
 
-const askDate = (ev, orderedPlace) => {
-  return client.replyMessage(ev.replyToken, {
-    "type": "flex",
-    "altText": "予約日選択",
-    "contents":
-    {
-      "type": "bubble",
-      "body": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": "来店希望日を選んでください。",
-            "size": "md",
-            "align": "center"
-          }
-        ]
-      },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "button",
-            "action": {
-              "type": "datetimepicker",
-              "label": "希望日を選択する",
-              "data": `date&${orderedPlace}`,
-              "mode": "date"
-            }
-          }
-        ]
-      }
-    }
-  });
-}
 
-const askfeel = (ev, orderedPlace, selectedDate) => {
+
+const askfeel = (ev) => {
   return client.replyMessage(ev.replyToken, {
     "type": "flex",
-    "altText": "予約時間選択",
+    "altText": "その時どんな感情でした？",
     "contents":
     {
       "type": "bubble",
@@ -185,7 +166,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
         "contents": [
           {
             "type": "text",
-            "text": "そんなことがったんですね！",
+            "text": "その時どんな感情でした？",
             "wrap": true,
             "size": "lg"
           },
@@ -207,7 +188,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "喜び",
-                  "data": `time&${orderedPlace}&${selectedDate}&0`
+                  "data": `feel&${Whatareudoing}&喜び`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -218,7 +199,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "悲しみ",
-                  "data": `time&${orderedPlace}&${selectedDate}&1`
+                  "data": `feel&${Whatareudoing}&悲しみ`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -229,7 +210,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "怒り",
-                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                  "data": `feel&${Whatareudoing}&怒り`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -240,7 +221,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "驚き",
-                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                  "data": `feel&${Whatareudoing}&驚き`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -251,7 +232,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "恐れ",
-                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                  "data": `feel&${Whatareudoing}&恐れ`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -262,7 +243,7 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
                 "action": {
                   "type": "postback",
                   "label": "楽しい",
-                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                  "data": `feel&${Whatareudoing}&楽しい`
                 },
                 "style": "primary",
                 "color": "#00AA00",
@@ -286,65 +267,5 @@ const askfeel = (ev, orderedPlace, selectedDate) => {
       }
     }
   });
-}
-
-const confirmation = (ev, orderedPlace, selectedDate, selectedTime) => {
-  const splitDate = selectedDate.split('-');
-  let strTime
-  switch (selectedTime) {
-    case '0':
-      strTime = "8:00~12:00";
-      break;
-    case '1':
-      strTime = "13:00~17:00";
-      break;
-    case '2':
-      strTime = "8:00~17:00";
-      break;
-  }
-  return client.replyMessage(ev.replyToken, {
-    "type": "flex",
-    "altText": "menuSelect",
-    "contents":
-    {
-      "type": "bubble",
-      "body": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": `予約内容は${placeDic[orderedPlace]}の${splitDate[1]}月${splitDate[2]}日 ${strTime}でよろしいですか？`,
-            "size": "lg",
-            "wrap": true
-          }
-        ]
-      },
-      "footer": {
-        "type": "box",
-        "layout": "horizontal",
-        "contents": [
-          {
-            "type": "button",
-            "action": {
-              "type": "postback",
-              "label": "はい",
-              "data": `yes&${orderedPlace}&${selectedDate}&${selectedTime}`
-            }
-          },
-          {
-            "type": "button",
-            "action": {
-              "type": "postback",
-              "label": "いいえ",
-              "data": `no&${orderedPlace}&${selectedDate}&${selectedTime}`
-            }
-          }
-        ]
-      }
-    }
-  });
-}
-
-
+};
 
