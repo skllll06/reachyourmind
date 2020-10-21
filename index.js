@@ -27,7 +27,6 @@ express()
 
 function lineBot(req, res) {
   //とりあえず200番を返す
-  console.log('200版を返す')
   res.status(200).end();
   // ボディからイベントを取得
   const events = req.body.events;
@@ -61,6 +60,7 @@ const greeting_follow = async (ev) => {
 }
 
 const handleMessageEvent = async (ev) => {
+  console.log(ev)
   const data = ev.postback.data;
   const splitData = data.split('&');
   //ユーザー名を取得
