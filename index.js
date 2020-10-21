@@ -6,6 +6,7 @@ const line = require("@line/bot-sdk");
 var fs = require('fs');
 var ids = require('ids');
 const { resolve } = require("path");
+const { isNull } = require("util");
 require('date-utils');
 
 //LINE API設定
@@ -67,8 +68,10 @@ const handleMessageEvent = async (ev) => {
   console.log(client)
   console.log('aa')
   //ユーザー名を取得
-  //const profile = await client.getProfile(ev.source.userId);
+  const profile = await client.getProfile(ev.source.userId);
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+  const data = (ev.postback.data === Null) ? ev.postback.data : '';;
+  const splitData = data.split('&');
   console.log(text)
   //返事を送信
   if (text === '聞いて') {
@@ -78,14 +81,10 @@ const handleMessageEvent = async (ev) => {
       values: 'what'
     });
   } else if (splitData[0] === 'what') {
-    console.log(ev);
-    const data = ev.postback.data;
     const splitData = data.split('&');
     const Whatareudoing = splitData[1]
     askfeel(ev, Whatareudoing)
   } else if (splitData[0] === 'feel') {
-    const data = ev.postback.data;
-    const splitData = data.split('&');
     const Whatareudoing = splitData[1]
     const Howdoufeel = splitData[2]
     return client.replyMessage(ev.replyToken, {
@@ -94,8 +93,6 @@ const handleMessageEvent = async (ev) => {
       values: `why&${Whatareudoing}&${Howdoufeel}`
     });
   } else if (splitData[0] === 'why') {
-    const data = ev.postback.data;
-    const splitData = data.split('&');
     const Whatareudoing = splitData[1]
     const Howdoufeel = splitData[2]
     const whyareufeelso = splitData[3]
@@ -105,8 +102,6 @@ const handleMessageEvent = async (ev) => {
       values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
     });
   } else if (splitData[0] === 'learn') {
-    const data = ev.postback.data;
-    const splitData = data.split('&');
     const Whatareudoing = splitData[1]
     const Howdoufeel = splitData[2]
     const whyareufeelso = splitData[3]
