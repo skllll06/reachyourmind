@@ -61,7 +61,10 @@ const greeting_follow = async (ev) => {
 }
 
 const handleMessageEvent = async (ev) => {
+  console.log('evを表示')
   console.log(ev)
+  console.log('Clientを表示')
+  console.log(client)
   console.log('aa')
   //ユーザー名を取得
   //const profile = await client.getProfile(ev.source.userId);
