@@ -27,8 +27,8 @@ express()
 
 function lineBot(req, res) {
   //とりあえず200番を返す
-  res.status(200).end();
   console.log('200版を返す')
+  res.status(200).end();
   // ボディからイベントを取得
   const events = req.body.events;
   const promises = [];
