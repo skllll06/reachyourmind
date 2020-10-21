@@ -9,28 +9,6 @@ var ids = require('ids');
 const { resolve } = require("path");
 require('date-utils');
 
-//postgresql設定
-const connection = new Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: 5432
-});
-connection.connect();
-
-//施設の辞書
-const placeDic = {
-  0: 'ALFA-岡山',
-  1: 'BETA-広島'
-};
-
-const timeDir = {
-  0: "8:00~12:00",
-  1: "13:00~17:00",
-  2: "8:00~17:00"
-}
-
 //LINE API設定
 const config = {
   channelAccessToken: process.env.ACCESS_TOKEN,
@@ -38,27 +16,6 @@ const config = {
 };
 const client = new line.Client(config);
 
-
-//テーブル作成(userテーブル)
-const create_userTable =
-{
-  text: 'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255)  PRIMARY KEY , display_name VARCHAR(255), timestamp VARCHAR(255));'
-};
-connection.query(create_userTable)
-  .then(() => {
-    console.log('table users created successfully!!');
-  })
-  .catch(e => console.log(e));
-
-//テーブル作成(userテーブル)
-const create_reservationTable = {
-  text: 'CREATE TABLE IF NOT EXISTS reservations (id SERIAL NOT NULL, line_uid VARCHAR(255), scheduledate DATE, scheduletime VARCHAR(50), place VARCHAR(50),PRIMARY KEY(scheduledate, scheduletime, place));'
-};
-connection.query(create_reservationTable)
-  .then(() => {
-    console.log('table reservation created successfully!!');
-  })
-  .catch(e => console.log(e));
 
 express()
   .use(express.static(path.join(__dirname, "public")))
