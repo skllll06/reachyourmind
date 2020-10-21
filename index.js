@@ -2,7 +2,6 @@
 const express = require("express");
 const path = require("path");
 const PORT = process.env.PORT || 5000;
-const { Client } = require('pg');
 const line = require("@line/bot-sdk");
 var fs = require('fs');
 var ids = require('ids');
@@ -54,29 +53,38 @@ function lineBot(req, res) {
 
 const greeting_follow = async (ev) => {
   const profile = await client.getProfile(ev.source.userId);
-  const table_insert = {
-    text: 'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3);',
-    values: [ev.source.userId, profile.displayName, ev.timestamp]
-  };
-  console.log(table_insert)
-  connection.query(table_insert)
-    .then(() => {
-      console.log('insert successfully!!')
-    })
-    .catch(e => console.log(e));
   return client.replyMessage(ev.replyToken, {
     "type": "text",
     "text": `${profile.displayName}さん、フォローありがとうございます!\uDBC0\uDC04`
   });
 }
 
-async function handleMessageEvent(ev) {
+const handleMessageEvent = async (ev) =>  {
+  const data = ev.postback.data;
+  const splitData = data.split('&');
   //ユーザー名を取得
   const profile = await client.getProfile(ev.source.userId);
   const text = (ev.message.type === 'text') ? ev.message.text : '';
   //返事を送信
-  if (text === '予約する') {
-    orderChoice(ev);
+  if (text === '聞いて') {
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `${profile.displayName}さん、どうしました？`,
+      values: 'start'
+    });
+  } else if (splitData[0] === 'start') {
+    const orderedPlace = splitData[1];
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `${profile.displayName}さん、どうしました？`,
+      values: 'how'
+    });
+  } else if (splitData[0] === 'how') {
+    return client.replyMessage(ev.replyToken, {
+    });
+  } else if (splitData[0] === 'lmh') {
+    return client.replyMessage(ev.replyToken, {
+    });
   } else {
     return client.replyMessage(ev.replyToken, {
       type: "text",
@@ -84,144 +92,7 @@ async function handleMessageEvent(ev) {
     });
   }
 }
-
-const orderChoice = (ev) => {
-  return client.replyMessage(ev.replyToken, {
-    "type": "flex",
-    "altText": "menuSelect",
-    "contents":
-    {
-      "type": "carousel",
-      "contents": [
-        {
-          "type": "bubble",
-          "hero": {
-            "type": "image",
-            "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
-            "size": "full",
-            "aspectRatio": "20:13",
-            "aspectMode": "cover"
-          },
-          "body": {
-            "type": "box",
-            "layout": "vertical",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "KEISEN ALFA-岡山",
-                "weight": "regular",
-                "size": "xl",
-                "align": "center",
-                "gravity": "bottom",
-                "margin": "sm",
-                "wrap": true,
-                "contents": []
-              }
-            ]
-          },
-          "footer": {
-            "type": "box",
-            "layout": "vertical",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "button",
-                "action": {
-                  "type": "postback",
-                  "label": "予約する",
-                  "data": "place&0"
-                },
-                "style": "primary"
-              },
-              {
-                "type": "button",
-                "action": {
-                  "type": "uri",
-                  "label": "Access",
-                  "uri": "https://eeej.jp/villa_keisen/"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "bubble",
-          "hero": {
-            "type": "image",
-            "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
-            "size": "full",
-            "aspectRatio": "20:13",
-            "aspectMode": "cover"
-          },
-          "body": {
-            "type": "box",
-            "layout": "vertical",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "KEISEN BETA-広島",
-                "weight": "regular",
-                "size": "xl",
-                "align": "center",
-                "gravity": "bottom",
-                "margin": "sm",
-                "wrap": true,
-                "contents": []
-              }
-            ]
-          },
-          "footer": {
-            "type": "box",
-            "layout": "vertical",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "button",
-                "action": {
-                  "type": "postback",
-                  "label": "予約する",
-                  "data": "place&1"
-                },
-                "style": "primary"
-              },
-              {
-                "type": "button",
-                "action": {
-                  "type": "uri",
-                  "label": "Access",
-                  "uri": "https://eeej.jp/villa_keisen/"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "bubble",
-          "body": {
-            "type": "box",
-            "layout": "vertical",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "button",
-                "action": {
-                  "type": "uri",
-                  "label": "See more",
-                  "uri": "https://eeej.jp/villa_keisen/"
-                },
-                "flex": 1,
-                "gravity": "center"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  });
-}
-
+  
 const handlePostbackEvent = async (ev) => {
   const profile = await client.getProfile(ev.source.userId);
   const data = ev.postback.data;
@@ -240,43 +111,7 @@ const handlePostbackEvent = async (ev) => {
     const selectedTime = splitData[3];
     confirmation(ev, orderedPlace, selectedDate, selectedTime);
   } else if (splitData[0] === 'yes') {
-    const orderedPlace = splitData[1];
-    const selectedDate = splitData[2];
-    const selectedTime = splitData[3];
-    let insertQuery
-    if (selectedTime === '2') {
-      console.log(selectedTime)
-      insertQuery = {
-        text: 'INSERT INTO reservations (line_uid, scheduledate, scheduletime, place) VALUES($1,$2,$3,$4),($1,$2,$5,$4);',
-        values: [ev.source.userId, selectedDate, 0, orderedPlace, 1]
-      };
-      console.log(selectedTime)
-      console.log(insertQuery)
-    } else {
-      insertQuery = {
-        text: 'INSERT INTO reservations (line_uid, scheduledate, scheduletime, place) VALUES($1,$2,$3,$4);',
-        values: [ev.source.userId, selectedDate, selectedTime, orderedPlace]
-      };
-      console.log(selectedTime)
-      console.log(insertQuery)
-    };
 
-    connection.query(insertQuery)
-      .then(res => {
-        console.log('データ格納成功！');
-        client.replyMessage(ev.replyToken, {
-          "type": "text",
-          "text": "予約が完了しました。"
-        });
-      })
-      .catch(e => {
-        console.log(e)
-        console.log('データ格納失敗');
-        client.replyMessage(ev.replyToken, {
-          "type": "text",
-          "text": "予約に失敗しました。\n申し訳ございませんが初めからお願いします。"
-        });
-      });
 
   } else if (splitData[0] === 'no') {
     client.replyMessage(ev.replyToken, {
@@ -337,7 +172,7 @@ const askDate = (ev, orderedPlace) => {
   });
 }
 
-const askTime = (ev, orderedPlace, selectedDate) => {
+const askfeel = (ev, orderedPlace, selectedDate) => {
   return client.replyMessage(ev.replyToken, {
     "type": "flex",
     "altText": "予約時間選択",
@@ -350,7 +185,7 @@ const askTime = (ev, orderedPlace, selectedDate) => {
         "contents": [
           {
             "type": "text",
-            "text": "ご希望の時間帯を選択してください（緑=予約可能です）",
+            "text": "そんなことがったんですね！",
             "wrap": true,
             "size": "lg"
           },
@@ -371,7 +206,7 @@ const askTime = (ev, orderedPlace, selectedDate) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "午前(8:00~12:00)",
+                  "label": "喜び",
                   "data": `time&${orderedPlace}&${selectedDate}&0`
                 },
                 "style": "primary",
@@ -382,7 +217,7 @@ const askTime = (ev, orderedPlace, selectedDate) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "午後(13:00~17:00)",
+                  "label": "悲しみ",
                   "data": `time&${orderedPlace}&${selectedDate}&1`
                 },
                 "style": "primary",
@@ -393,7 +228,40 @@ const askTime = (ev, orderedPlace, selectedDate) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "終日(8:00~17:00)",
+                  "label": "怒り",
+                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                },
+                "style": "primary",
+                "color": "#00AA00",
+                "margin": "md"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "驚き",
+                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                },
+                "style": "primary",
+                "color": "#00AA00",
+                "margin": "md"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "恐れ",
+                  "data": `time&${orderedPlace}&${selectedDate}&2`
+                },
+                "style": "primary",
+                "color": "#00AA00",
+                "margin": "md"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "楽しい",
                   "data": `time&${orderedPlace}&${selectedDate}&2`
                 },
                 "style": "primary",
@@ -478,26 +346,5 @@ const confirmation = (ev, orderedPlace, selectedDate, selectedTime) => {
   });
 }
 
-const checkPersonalReservation = (ev) => {
-  return new Promise((resolve, rejext) => {
-    const id = ev.source.userId;
-    const nowTime = new Date();
-    const selectQuery = {
-      text: 'SELECT * FROM reservations WHERE line_uid = $1 ORDER BY scheduledate ASC;',
-      values: [`${id}`]
-    };
-    connection.query(selectQuery)
-      .then(res => {
-        console.log("select成功")
-        const nextRearvation = res.rows.filter(object => {
-          console.log(object.scheduledate)
-          return object.scheduledate >= nowTime;
-        });
-        console.log(nextRearvation);
-        resolve(nextRearvation);
-      })
-      .catch(e => console.log(e))
-  });
-}
 
 
