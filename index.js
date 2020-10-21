@@ -64,7 +64,7 @@ const handleMessageEvent = async (ev) => {
   console.log(ev)
   console.log('aa')
   //ユーザー名を取得
-  const profile = await client.getProfile(ev.source.userId);
+  //const profile = await client.getProfile(ev.source.userId);
   const text = (ev.message.type === 'text') ? ev.message.text : '';
   console.log(profile)
   console.log(text)
