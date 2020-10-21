@@ -31,6 +31,7 @@ function lineBot(req, res) {
   // ボディからイベントを取得
   const events = req.body.events;
   const promises = [];
+  console.log(events)
   for (let i = 0; i < events.length; i++) {
     const ev = events[i];
     switch (ev.type) {
@@ -64,6 +65,8 @@ const handleMessageEvent = async (ev) => {
   //ユーザー名を取得
   const profile = await client.getProfile(ev.source.userId);
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+  console.log(profile)
+  console.log(text)
   //返事を送信
   if (text === '聞いて') {
     return client.replyMessage(ev.replyToken, {
