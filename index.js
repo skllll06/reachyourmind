@@ -71,47 +71,50 @@ const handleMessageEvent = async (ev) => {
       text: `${profile.displayName}さん、どうしました？`,
       values: 'what'
     });
-  } else {
+  } else if (splitData[0] === 'what') {
+    console.log(ev);
     const data = ev.postback.data;
     const splitData = data.split('&');
-    if (splitData[0] === 'what') {
-      const data = ev.postback.data;
-      const splitData = data.split('&');
-      const Whatareudoing = splitData[1]
-      askfeel(ev, Whatareudoing)
-    } else if (splitData[0] === 'feel') {
-      const Whatareudoing = splitData[1]
-      const Howdoufeel = splitData[2]
-      return client.replyMessage(ev.replyToken, {
-        type: "text",
-        text: `どうしてそう感じだのですか？`,
-        values: `why&${Whatareudoing}&${Howdoufeel}`
-      });
-    } else if (splitData[0] === 'why') {
-      const Whatareudoing = splitData[1]
-      const Howdoufeel = splitData[2]
-      const whyareufeelso = splitData[3]
-      return client.replyMessage(ev.replyToken, {
-        type: "text",
-        text: `そこから何を学びましたか？`,
-        values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
-      });
-    } else if (splitData[0] === 'learn') {
-      const Whatareudoing = splitData[1]
-      const Howdoufeel = splitData[2]
-      const whyareufeelso = splitData[3]
-      const whatdoulearn = splitData[4]
-      return client.replyMessage(ev.replyToken, {
-        type: "text",
-        text: `そこから何を学びましたか？`,
-        values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
-      });
-    } else
-      return client.replyMessage(ev.replyToken, {
-        type: "text",
-        text: `${profile.displayName}さん、今「${ev.message.text}」って言いました？`
-
-      });
+    const Whatareudoing = splitData[1]
+    askfeel(ev, Whatareudoing)
+  } else if (splitData[0] === 'feel') {
+    const data = ev.postback.data;
+    const splitData = data.split('&');
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `どうしてそう感じだのですか？`,
+      values: `why&${Whatareudoing}&${Howdoufeel}`
+    });
+  } else if (splitData[0] === 'why') {
+    const data = ev.postback.data;
+    const splitData = data.split('&');
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
+    const whyareufeelso = splitData[3]
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `そこから何を学びましたか？`,
+      values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
+    });
+  } else if (splitData[0] === 'learn') {
+    const data = ev.postback.data;
+    const splitData = data.split('&');
+    const Whatareudoing = splitData[1]
+    const Howdoufeel = splitData[2]
+    const whyareufeelso = splitData[3]
+    const whatdoulearn = splitData[4]
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `そこから何を学びましたか？`,
+      values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
+    });
+  } else {
+    return client.replyMessage(ev.replyToken, {
+      type: "text",
+      text: `${profile.displayName}さん、今「${ev.message.text}」って言いました？`
+    });
   }
 }
 
