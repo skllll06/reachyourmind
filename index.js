@@ -54,10 +54,9 @@ function lineBot(req, res) {
 }
 
 const greeting_follow = async (ev) => {
-  const profile = await client.getProfile(ev.source.userId);
   return client.replyMessage(ev.replyToken, {
     "type": "text",
-    "text": `${profile.displayName}さん、フォローありがとうございます!\uDBC0\uDC04`
+    "text": `フォローありがとうございます!\uDBC0\uDC04`
   });
 }
 
@@ -68,7 +67,6 @@ const handleMessageEvent = async (ev) => {
   console.log(client)
   console.log(ev.source.userId);
   //ユーザー名を取得
-  const profile = await client.getProfile(ev.source.userId);
   const text = (ev.message.type === 'text') ? ev.message.text : '';
   const data = (ev.postback.data === Null) ? ev.postback.data : '';;
   const splitData = data.split('&');
@@ -77,7 +75,7 @@ const handleMessageEvent = async (ev) => {
   if (text === '聞いて') {
     return client.replyMessage(ev.replyToken, {
       type: "text",
-      text: `${profile.displayName}さん、どうしました？`,
+      text: `どうしました？`,
       values: 'what'
     });
   } else if (splitData[0] === 'what') {
@@ -114,7 +112,7 @@ const handleMessageEvent = async (ev) => {
   } else {
     return client.replyMessage(ev.replyToken, {
       type: "text",
-      text: `${profile.displayName}さん、今「${ev.message.text}」って言いました？`
+      text: `今「${ev.message.text}」って言いました？`
     });
   }
 }
