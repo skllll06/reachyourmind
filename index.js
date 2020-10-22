@@ -64,7 +64,7 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
   const data = (ev.postback) ? ev.postback.data : '';
   const splitData = data.split('&');
-  client.getProfile(ev.message.userId).then((profile) => {
+  await client.getProfile(ev.message.userId).then((profile) => {
     console.log(profile);
   });
   //返事を送信
