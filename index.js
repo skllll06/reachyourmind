@@ -68,6 +68,7 @@ const handleMessageEvent = async (ev) => {
   console.log(ev.source.userId);
   //ユーザー名を取得
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+  console.log(typeof ev.postback.data === 'undefined')
   const data = (typeof ev.postback.data === 'undefined') ? '' : ev.postback.data;
   const splitData = data.split('&');
   console.log(text)
@@ -87,7 +88,7 @@ const handleMessageEvent = async (ev) => {
     const Howdoufeel = splitData[2]
     return client.replyMessage(ev.replyToken, {
       type: "text",
-      text: `どうしてそう感じだのですか？`,
+      text: `どうしてそう感じたのですか？`,
       values: `why&${Whatareudoing}&${Howdoufeel}`
     });
   } else if (splitData[0] === 'why') {
