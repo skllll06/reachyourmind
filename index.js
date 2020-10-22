@@ -6,7 +6,6 @@ const line = require("@line/bot-sdk");
 var fs = require('fs');
 var ids = require('ids');
 const { resolve } = require("path");
-const { isNull } = require("util");
 require('date-utils');
 
 //LINE API設定
@@ -62,10 +61,12 @@ const greeting_follow = async (ev) => {
 
 const handleMessageEvent = async (ev) => {
   //ユーザー名を取得
-  const text = (ev) ? ev.message.text : '';
+  const text = (ev.message.type === 'text') ? ev.message.text : '';
   const data = (ev.postback) ? ev.postback.data : '';
   const splitData = data.split('&');
-  console.log(text)
+  client.getProfile(ev.message.userId).then((profile) => {
+    console.log(profile);
+  });
   //返事を送信
   if (text === '聞いて') {
     return client.replyMessage(ev.replyToken, {
@@ -105,13 +106,13 @@ const handleMessageEvent = async (ev) => {
       values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
     });
   } else {
-    console.log('ここきた')
     return client.replyMessage(ev.replyToken, {
       type: "text",
-      text: `今「${ev.message.text}」って言いました？`
+      text: `${profile.displayName}さん、今「${ev.message.text}」って言いました？`
     });
   }
 }
+
 
 const handlePostbackEvent = async (ev) => {
   const profile = await client.getProfile(ev.source.userId);
