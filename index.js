@@ -11,7 +11,7 @@ require('date-utils');
 //LINE API設定
 const config = {
   channelAccessToken: process.env.ACCESS_TOKEN,
-  channelSecret: process.env.SECRET_KEY
+  //channelSecret: process.env.SECRET_KEY
 };
 const client = new line.Client(config);
 
