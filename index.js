@@ -65,7 +65,7 @@ const handleMessageEvent = async (ev) => {
   const profile = await client.getProfile(ev.source.userId);
   const data = (ev.message.data) ? ev.message.data : '';
   const splitData = data.split('&');
-  返事を送信
+  //返事を送信
   if (text === '聞いて') {
     return client.replyMessage(ev.replyToken, {
       type: "text",
