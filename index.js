@@ -105,6 +105,7 @@ const handleMessageEvent = async (ev) => {
       values: `learn&${Whatareudoing}&${Howdoufeel, whyareufeelso}`
     });
   } else {
+    console.log('ここきた')
     return client.replyMessage(ev.replyToken, {
       type: "text",
       text: `今「${ev.message.text}」って言いました？`
