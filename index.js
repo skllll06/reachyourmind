@@ -62,11 +62,8 @@ const greeting_follow = async (ev) => {
 const handleMessageEvent = async (ev) => {
   //ユーザー名を取得
   const text = (ev.message.type === 'text') ? ev.message.text : '';
-  const data = (ev.postback) ? ev.postback.data : '';
   const splitData = data.split('&');
-  await client.getProfile(ev.message.userId).then((profile) => {
-    console.log(profile);
-  });
+  const profile = await client.getProfile(ev.source.userId);
   console.log('aaaaaaaaaaaaaaa')
   //返事を送信
   // if (text === '聞いて') {
