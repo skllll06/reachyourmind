@@ -56,18 +56,13 @@ function lineBot(req, res) {
 const greeting_follow = async (ev) => {
   return client.replyMessage(ev.replyToken, {
     "type": "text",
-    "text": `フォローありがとうございます!\uDBC0\uDC04`
+    "text": `フォローありがとうございます!`
   });
 }
 
 const handleMessageEvent = async (ev) => {
-  console.log('evを表示')
-  console.log(ev)
-  console.log('Clientを表示')
-  console.log(client)
-  console.log(ev.source.userId);
   //ユーザー名を取得
-  const text = (ev.postback) ? ev.message.text : '';
+  const text = (ev) ? ev.message.text : '';
   const data = (ev.postback) ? ev.postback.data : '';
   const splitData = data.split('&');
   console.log(text)
