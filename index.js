@@ -67,8 +67,8 @@ const handleMessageEvent = async (ev) => {
   console.log(client)
   console.log(ev.source.userId);
   //ユーザー名を取得
-  const text = (ev.message.type === 'text') ? ev.message.text : '';
-  console.log(typeof ev.postback.data === 'undefined')
+  const text = (ev.postback) ? ev.message.text : '';
+  console.log(typeof ev.postback)
   const data = (typeof ev.postback.data === 'undefined') ? '' : ev.postback.data;
   const splitData = data.split('&');
   console.log(text)
