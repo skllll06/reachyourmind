@@ -67,6 +67,7 @@ const handleMessageEvent = async (ev) => {
   await client.getProfile(ev.message.userId).then((profile) => {
     console.log(profile);
   });
+  console.log('aaaaaaaaaaaaaaa')
   //返事を送信
   // if (text === '聞いて') {
   //   return client.replyMessage(ev.replyToken, {
